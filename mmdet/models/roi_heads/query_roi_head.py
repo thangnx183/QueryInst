@@ -193,6 +193,7 @@ class QueryRoIHead(CascadeRoIHead):
         if sum([len(gt_mask) for gt_mask in gt_masks])==0:
             print('Groudtruth Not Founded!')
             loss_mask = sum([_.sum() for _ in self.mask_head[stage].parameters()]) * 0.
+            #print('debug :',loss_mask)
             return dict(loss_mask=loss_mask)
         pos_rois = bbox2roi([res.pos_bboxes for res in sampling_results])
         attn_feats = torch.cat([feats[res.pos_inds] for (feats, res) in zip(attn_feats, sampling_results)])
@@ -291,6 +292,7 @@ class QueryRoIHead(CascadeRoIHead):
             if self.with_mask:
                 mask_results = self._mask_forward_train(stage, x, bbox_results['attn_feats'], 
                                             sampling_results, gt_masks, self.train_cfg[stage])
+                #print('debug mask:',mask_results['loss_mask'])
                 single_stage_loss['loss_mask'] = mask_results['loss_mask']
 
             for key, value in single_stage_loss.items():
